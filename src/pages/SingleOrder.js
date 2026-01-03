@@ -47,6 +47,9 @@ const SingleOrder = () => {
   };
 
   const formatPrice = (price) => {
+    if (price === 0) {
+      return 'A Cotizar';
+    }
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
       currency: 'MXN',
@@ -84,13 +87,20 @@ const SingleOrder = () => {
     <>
       <PageTitle>Detalles de la Orden #{order._id.substring(0, 8)}...</PageTitle>
 
+      {order.containsQuotationItems && (
+        <div className="mb-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 dark:bg-yellow-200 dark:text-yellow-800 rounded-r-lg shadow-md">
+          <p className="font-bold">Atención: Cotización Manual Requerida</p>
+          <p>Esta orden contiene artículos con precio "A Cotizar". Por favor, revise manualmente los precios y contacte al cliente para confirmar el total final antes de procesar el pedido.</p>
+        </div>
+      )}
+
       <div className="grid gap-6 mb-8 md:grid-cols-2">
         {/* Order Info */}
         <div className="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
           <h2 className="mb-4 font-semibold text-gray-800 dark:text-gray-300">Información General</h2>
           <p className="text-gray-600 dark:text-gray-400"><strong>Cliente:</strong> {order.client?.email || 'N/A'}</p>
           <p className="text-gray-600 dark:text-gray-400"><strong>Fecha:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
-          <p className="text-gray-600 dark:text-gray-400"><strong>Total:</strong> {formatPrice(order.totalPrice)}</p>
+          <p className="text-gray-600 dark:text-gray-400"><strong>Total (parcial):</strong> {formatPrice(order.totalPrice)}</p>
           <div className="flex items-center mt-4">
             <p className="text-gray-600 dark:text-gray-400 mr-2"><strong>Estado:</strong></p>
             <StatusDropdown
@@ -157,7 +167,7 @@ const SingleOrder = () => {
             <p className="font-medium text-gray-700 dark:text-gray-300">{formatPrice(order.shippingPrice)}</p>
           </div>
           <div className="flex justify-between py-2 mt-2">
-            <p className="text-xl font-bold text-gray-800 dark:text-gray-300">Total:</p>
+            <p className="text-xl font-bold text-gray-800 dark:text-gray-300">Total (parcial):</p>
             <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{formatPrice(order.totalPrice)}</p>
           </div>
       </div>
