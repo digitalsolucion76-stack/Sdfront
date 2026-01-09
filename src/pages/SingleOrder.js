@@ -19,8 +19,13 @@ const SingleOrder = () => {
       setOrder(response);
     } catch (err) {
       console.error("Error fetching order details:", err);
-      setError("Error al cargar los detalles de la orden.");
-      toast.error("Error al cargar los detalles de la orden.");
+      if (err.response?.status === 401) {
+        setError("Sesión expirada. Por favor, inicie sesión nuevamente.");
+        toast.error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+      } else {
+        setError("Error al cargar los detalles de la orden.");
+        toast.error("Error al cargar los detalles de la orden.");
+      }
     } finally {
       setLoading(false);
     }
@@ -40,7 +45,7 @@ const SingleOrder = () => {
           error: (err) => `Error: ${err.response?.data?.message || err.message}`,
         }
       );
-      setOrder(prevOrder => ({ ...prevOrder, status: newStatus })); // Optimistic update
+      setOrder(prevOrder => ({ ...prevOrder, status: newStatus }));
     } catch (err) {
       console.error("Error updating order status:", err);
     }
