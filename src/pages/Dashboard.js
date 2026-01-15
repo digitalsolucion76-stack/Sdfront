@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import InfoCard from "../components/Cards/InfoCard";
 import PageTitle from "../components/Typography/PageTitle";
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from "../icons";
+import { CartIcon, MoneyIcon, PeopleIcon } from "../icons";
 import RoundIcon from "../components/RoundIcon";
 import { getClients } from "../api/clients";
 import { getAdminOrders } from "../api/orders";
@@ -17,30 +17,36 @@ function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     setError(null);
 
     Promise.all([getClients(), getAdminOrders()])
       .then(([clientsResponse, ordersResponse]) => {
-        setTotalClients(clientsResponse.total);
+        if (isMounted) {
+          setTotalClients(clientsResponse.total);
 
-        const total = ordersResponse.orders.reduce(
-          (acc, order) => acc + order.totalPrice,
-          0
-        );
-        setTotalRevenue(total);
+          const total = ordersResponse.orders.reduce(
+            (acc, order) => acc + order.totalPrice,
+            0
+          );
+          setTotalRevenue(total);
 
-        const pendingOrders = ordersResponse.orders.filter(
-          (order) => order.status === "Pending"
-        ).length;
-        setNewOrders(pendingOrders);
+          const pendingOrders = ordersResponse.orders.filter(
+            (order) => order.status === "Pending"
+          ).length;
+          setNewOrders(pendingOrders);
 
-        setLoading(false);
+          setLoading(false);
+        }
       })
       .catch((err) => {
-        setError(err);
-        setLoading(false);
+        if (isMounted) {
+          setError(err);
+          setLoading(false);
+        }
       });
+    return () => { isMounted = false; };
   }, []);
 
   if (loading) {

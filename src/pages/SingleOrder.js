@@ -11,34 +11,46 @@ const SingleOrder = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchOrder = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await getAdminOrderById(id);
-      setOrder(response);
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setOrder(null);
-        setError(null);
-      } else {
-        console.error("Error fetching order details:", err);
-        if (err.response?.status === 401) {
-          setError("Sesión expirada. Por favor, inicie sesión nuevamente.");
-          toast.error("Sesión expirada. Por favor, inicie sesión nuevamente.");
-        } else {
-          setError("Error al cargar los detalles de la orden.");
-          toast.error("Error al cargar los detalles de la orden.");
-        }
-      }
-      
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true;
+    const fetchOrder = async () => {
+      if (isMounted) {
+        setLoading(true);
+        setError(null);
+      }
+      try {
+        const response = await getAdminOrderById(id);
+        if (isMounted) setOrder(response);
+      } catch (err) {
+        if (isMounted) {
+          if (err.response?.status === 404) {
+            if (err.response?.data?.message) {
+              setError(err.response.data.message);
+              toast.error(err.response.data.message);
+            } else {
+              const msg = "Error 404: No se encontró la orden o hubo un error interno.";
+              setError(msg);
+              toast.error(msg);
+            }
+          } else {
+            console.error("Error fetching order details:", err);
+            if (err.response?.status === 401) {
+              setError("Sesión expirada. Por favor, inicie sesión nuevamente.");
+              toast.error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+            } else {
+              const errorMessage = err.response?.data?.message || "Error al cargar los detalles de la orden.";
+              setError(errorMessage);
+              toast.error(errorMessage);
+            }
+          }
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
     fetchOrder();
+    return () => { isMounted = false; };
   }, [id]);
 
   const handleStatusChange = async (orderId, newStatus) => {

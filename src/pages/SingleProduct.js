@@ -16,21 +16,21 @@ const SingleProduct = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchProduct = async () => {
-    try {
-      setLoading(true);
-      const data = await getProductById(id);
-      setProduct(data);
-    } catch (error) {
-      toast.error("Error al cargar el producto");
-      console.error('Failed to fetch product', error);
-      setProduct(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const data = await getProductById(id);
+        setProduct(data);
+      } catch (error) {
+        toast.error("Error al cargar el producto");
+        console.error('Failed to fetch product', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProduct();
   }, [id]);
 

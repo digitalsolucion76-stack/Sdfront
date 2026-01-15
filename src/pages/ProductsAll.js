@@ -32,7 +32,7 @@ const ProductsAll = () => {
   const [category, setCategory] = useState(""); // for the api call by name
   const [selectedCategoryId, setSelectedCategoryId] = useState(""); // for the select control value
   const [categories, setCategories] = useState([]);
-  const [needsRefresh, setNeedsRefresh] = useState(false);
+  const [needsRefresh] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
