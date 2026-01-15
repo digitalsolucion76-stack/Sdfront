@@ -18,14 +18,20 @@ const SingleOrder = () => {
       const response = await getAdminOrderById(id);
       setOrder(response);
     } catch (err) {
-      console.error("Error fetching order details:", err);
-      if (err.response?.status === 401) {
-        setError("Sesión expirada. Por favor, inicie sesión nuevamente.");
-        toast.error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+      if (err.response?.status === 404) {
+        setOrder(null);
+        setError(null);
       } else {
-        setError("Error al cargar los detalles de la orden.");
-        toast.error("Error al cargar los detalles de la orden.");
+        console.error("Error fetching order details:", err);
+        if (err.response?.status === 401) {
+          setError("Sesión expirada. Por favor, inicie sesión nuevamente.");
+          toast.error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+        } else {
+          setError("Error al cargar los detalles de la orden.");
+          toast.error("Error al cargar los detalles de la orden.");
+        }
       }
+      
     } finally {
       setLoading(false);
     }
