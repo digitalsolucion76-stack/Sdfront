@@ -257,6 +257,7 @@ const AddProduct = () => {
                 <FormTitle>Seleccionar Categoría de Producto</FormTitle>
                 <Select className="mt-1" value={category} onChange={(e) => setCategory(e.target.value)}>
                   <option value="" disabled>Seleccione una categoría</option>
+                  <option value="PRINCIPALES">PRINCIPALES</option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>{cat.name}</option>
                   ))}

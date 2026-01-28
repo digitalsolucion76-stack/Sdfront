@@ -66,10 +66,14 @@ const EditProduct = () => {
         setCategories(allCategories);
 
         // Find the ID of the current product's category to set the dropdown correctly
-        if (product.category && allCategories.length > 0) {
-          const currentCategory = allCategories.find(cat => cat.name === product.category);
-          if (currentCategory) {
-            setCategory(currentCategory._id);
+        if (product.category) {
+          if (product.category === "PRINCIPALES") {
+            setCategory("PRINCIPALES");
+          } else {
+            const currentCategory = allCategories.find(cat => cat.name === product.category);
+            if (currentCategory) {
+              setCategory(currentCategory._id);
+            }
           }
         }
 
@@ -288,6 +292,7 @@ const EditProduct = () => {
                   <FormTitle>Seleccionar Categoría de Producto</FormTitle>
                   <Select className="mt-1" value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="" disabled>Seleccione una categoría</option>
+                    <option value="PRINCIPALES">PRINCIPAL</option>
                     {categories.map((cat) => (
                       <option key={cat._id} value={cat._id}>{cat.name}</option>
                     ))}

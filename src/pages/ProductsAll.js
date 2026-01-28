@@ -133,12 +133,16 @@ const ProductsAll = () => {
   };
 
   const handleCategoryChange = (e) => {
-    const categoryId = e.target.value;
-    setSelectedCategoryId(categoryId);
+    const categoryValue = e.target.value;
+    setSelectedCategoryId(categoryValue); // This state is for the select control
 
-    if (categoryId) {
-      const categoryName = categories.find(cat => cat._id === categoryId)?.name;
-      setCategory(categoryName || "");
+    if (categoryValue) {
+      if (categoryValue === 'PRINCIPALES') {
+        setCategory('PRINCIPALES');
+      } else {
+        const categoryName = categories.find(cat => cat._id === categoryValue)?.name;
+        setCategory(categoryName || "");
+      }
     } else {
       setCategory("");
     }

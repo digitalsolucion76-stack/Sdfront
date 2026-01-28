@@ -46,6 +46,7 @@ const ProductControls = ({
                 onChange={handleCategoryChange}
               >
                 <option value="">Todas las categorías</option>
+                <option value="PRINCIPALES">PRINCIPALES</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}

@@ -22,12 +22,30 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
 
   useEffect(() => {
     if (product) {
+      let categoryValue = "";
+      if (product.category) {
+        if (typeof product.category === 'object' && product.category._id) {
+          // If category is populated as an object
+          categoryValue = product.category._id;
+        } else if (typeof product.category === 'string') {
+          // If category is a string name (or "PRINCIPALES")
+          if (product.category === "PRINCIPALES") {
+            categoryValue = "PRINCIPALES";
+          } else {
+            // Find the corresponding category ID from the list
+            const foundCategory = categories.find(cat => cat.name === product.category);
+            if (foundCategory) {
+              categoryValue = foundCategory._id;
+            }
+          }
+        }
+      }
       setFormData({
         ...product,
-        category: product.category._id,
+        category: categoryValue,
       });
     }
-  }, [product]);
+  }, [product, categories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -109,6 +127,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                 value={formData.category || ""}
                 onChange={handleChange}
               >
+                <option value="PRINCIPALES">PRINCIPAL</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}

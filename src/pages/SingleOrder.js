@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getAdminOrderById, updateAdminOrderStatus } from '../api/orders';
 import toast from 'react-hot-toast';
 import PageTitle from '../components/Typography/PageTitle';
@@ -161,10 +161,18 @@ const SingleOrder = () => {
                 <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                     {order.orderItems.map((item) => (
                     <tr className="text-gray-700 dark:text-gray-400" key={item.product}> {/* Assuming item.product is unique ID */}
-                        <td className="px-4 py-3 text-sm font-medium">{item.title}</td>
+                        <td className="px-4 py-3 text-sm font-medium">
+                          <Link to={`/app/product/${item.product}`} className="hover:underline text-purple-600 dark:text-purple-400">
+                            {item.title}
+                          </Link>
+                        </td>
                         <td className="px-4 py-3 text-sm">{item.sku}</td>
                         <td className="px-4 py-3 text-sm">{item.quantity}</td>
-                        <td className="px-4 py-3 text-sm">{formatPrice(item.price)}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <Link to={`/app/product/${item.product}`} className="hover:underline">
+                            {formatPrice(item.price)}
+                          </Link>
+                        </td>
                         <td className="px-4 py-3 text-sm">{formatPrice(item.price * item.quantity)}</td>
                     </tr>
                     ))}
